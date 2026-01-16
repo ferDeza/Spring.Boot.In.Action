@@ -8,3 +8,5 @@ INSERT INTO Product (name,price,stock,category_id)
 VALUES ( 'Monitor 4k 21"', 300.00, 10, 1);
 INSERT INTO Product (name,price,stock,category_id)
 VALUES ('Teclado switch blue' , 50.00, 10, 2);
+INSERT INTO users (username,password,email)
+VALUES ('Fernando','123456789','prueba@gmail.com')

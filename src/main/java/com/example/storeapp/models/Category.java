@@ -9,7 +9,8 @@ import lombok.*;
 @Data
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
+
+@NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
 public class Category {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
