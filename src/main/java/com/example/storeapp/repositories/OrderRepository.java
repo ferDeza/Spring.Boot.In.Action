@@ -3,10 +3,13 @@ package com.example.storeapp.repositories;
 import com.example.storeapp.models.Product;
 import com.example.storeapp.models.ProductOrder;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
+
 
 import java.util.List;
+import java.util.UUID;
 
-public interface OrderRepository extends JpaRepository<ProductOrder, Long> {
+public interface OrderRepository extends CrudRepository<ProductOrder, UUID> {
     List<ProductOrder> findAllByOrderByIdDesc();
+
+    List<ProductOrder> id(UUID id);
 }

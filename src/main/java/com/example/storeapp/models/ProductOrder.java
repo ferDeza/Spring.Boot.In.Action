@@ -1,33 +1,30 @@
 package com.example.storeapp.models;
 
-import jakarta.persistence.*;
+import com.datastax.oss.driver.api.core.uuid.Uuids;
+import com.example.storeapp.models.ProductUDT.ProductUDT;
+import com.example.storeapp.models.UserUDT.UserUDT;
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 @Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
+@Table("orders")
 public class ProductOrder implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @PrimaryKey
+    private UUID id = Uuids.timeBased();
     private Date placeAt;
-    @PrePersist
-    protected void onCreate() {
-        placeAt = new Date();
-    }
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private User user;
-
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    private List<Product> products=new ArrayList<>();
-    public void addProduct(Product product) {
-        products.add(product);
+    private UserUDT user;
+    private List<ProductUDT> products=new ArrayList<>();
+    public void addProduct(ProductUDT product) {
+        this.products.add(product);
     }
 }
