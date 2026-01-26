@@ -21,6 +21,7 @@ public class ProductOrder implements Serializable {
     private static final long serialVersionUID = 1L;
     @PrimaryKey
     private UUID id = Uuids.timeBased();
+    private String username;
     private Date placeAt;
     private UserUDT user;
     private List<ProductUDT> products=new ArrayList<>();

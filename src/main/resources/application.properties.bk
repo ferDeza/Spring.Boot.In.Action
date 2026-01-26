@@ -1,0 +1,14 @@
+spring.application.name=StoreApp
+server.port=8081
+
+spring.cassandra.keyspace-name=storeapp
+
+spring.cassandra.schema-action=recreate
+
+spring.cassandra.local-datacenter=datacenter1
+
+spring.cassandra.contact-points=localhost
+spring.cassandra.port=9042
+# spring.jpa.hibernate.ddl-auto=update
+# spring.datasource.url=jdbc:h2:mem:storeapp
+# spring.h2.console.enabled=true

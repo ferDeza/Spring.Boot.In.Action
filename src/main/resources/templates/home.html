@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <body>
+<h1>Bienvenido a StoreApp Arequipa</h1>
+
+<div sec:authorize="isAuthenticated()">
+    <p>Hola, <span sec:authentication="name">Usuario</span>. Te has identificado correctamente.</p>
+
+    <form method="POST" th:action="@{/logout}">
+        <input type="submit" value="Cerrar Sesión"/>
+    </form>
+</div>
+
+<div sec:authorize="isAnonymous()">
+    <p>Bienvenido, visitante. Por favor, identifícate para ver tus pedidos.</p>
+    <a th:href="@{/login}">Ir al Login</a>
+</div>
+</body>
+</html>

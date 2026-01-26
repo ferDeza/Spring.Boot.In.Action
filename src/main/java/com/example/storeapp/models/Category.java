@@ -8,10 +8,11 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+
 @NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
 @Table("categories")
 public class Category {
-@PrimaryKey
+    @PrimaryKey
     private UUID id= UUID.randomUUID() ;
     private String name;
 }
