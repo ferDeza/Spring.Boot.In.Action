@@ -36,4 +36,4 @@ bin/
 
 # --- Sistema Operativo ---
 .DS_Store
-Thumbs.db
+src/main/resources/application.yml
