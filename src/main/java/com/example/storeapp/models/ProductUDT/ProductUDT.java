@@ -1,4 +1,4 @@
-package com.example.storeapp.models.ProductUDT;
+/*package com.example.storeapp.models.ProductUDT;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,3 +10,4 @@ public class ProductUDT {
     private String name;
     private Double price;
 }
+*/

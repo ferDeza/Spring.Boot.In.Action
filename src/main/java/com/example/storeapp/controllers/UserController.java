@@ -2,34 +2,59 @@ package com.example.storeapp.controllers;
 
 import com.example.storeapp.models.User;
 import com.example.storeapp.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-@Autowired
-    private UserRepository userRepository;
+
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    public UserController(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @GetMapping
-    public List<User> getAllUsers() {return (List<User>) userRepository.findAll();}
+    public List<User> getAllUsers() {return
+            userRepository.findAll();
+    }
+
+
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable UUID id) {return userRepository.findById(id).orElse(null);}
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return userRepository.findById(id).
+                map(ResponseEntity::ok).
+                orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
-    public User createUser(@RequestBody User user) {return userRepository.save(user);}
+    public User createUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable UUID id, @RequestBody User userDetails) {
-    User user = userRepository.findById(id).orElse(null);
-        if(user != null) {
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
-            user.setUsername(userDetails.getUsername());
-            return userRepository.save(user);
-        }
-        return null;
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    return userRepository.findById(id).map(
+            user->{
+                user.setEmail(userDetails.getEmail());
+                user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+                user.setEmail(userDetails.getEmail());
+                return ResponseEntity.ok(userRepository.save(user));
+            }).orElse(ResponseEntity.notFound().build());
     }
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable UUID id) {userRepository.deleteById(id);}
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    if(userRepository.existsById(id)) {
+        userRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
+    return ResponseEntity.notFound().build();
+    }
+}

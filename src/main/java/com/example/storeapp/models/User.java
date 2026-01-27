@@ -1,6 +1,5 @@
 package com.example.storeapp.models;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,15 +18,18 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
-@Table("users")
+@Entity
+@Table(name="users")
 public class User implements UserDetails {
-
-    private UUID id=UUID.randomUUID();
-    @PrimaryKey
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true, nullable = false)
     private String username;
+    @Column(nullable = false)
     private String password;
+    @Column(unique = true)
     private String email;
-
     @Override
     public Collection <? extends GrantedAuthority> getAuthorities() {
         return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));

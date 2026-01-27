@@ -1,22 +1,25 @@
 package com.example.storeapp.models;
 
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.UUID;
 
 //(id, name, price, stock
 @Data
 @AllArgsConstructor
+@Entity
 @NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
-@Table("products")
+@Table(name="products")
 public class Product {
-        @PrimaryKey
-        private UUID id=UUID.randomUUID();
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
         private String name ;
         private Double price;
         private Integer stock ;
-        private UUID categoryId;
+        @ManyToOne
+        @JoinColumn(name = "category_id")
+        private Category category;
 
 }

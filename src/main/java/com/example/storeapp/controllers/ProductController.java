@@ -1,48 +1,54 @@
 package com.example.storeapp.controllers;
-
 import com.example.storeapp.models.Product;
 import com.example.storeapp.repositories.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
-
+    private final ProductRepository productRepository;
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
     @GetMapping
     public List<Product> getAllProducts() {
-        return (List<Product>) productRepository.findAll();
+        return productRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable UUID id) {
-        return productRepository.findById(id).orElse(null);
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+                return productRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
+
         return productRepository.save(product);
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable UUID id, @RequestBody Product productDetails) {
-        Product product = productRepository.findById(id).orElse(null);
-        if (product != null) {
-            product.setName(productDetails.getName());
-            product.setPrice(productDetails.getPrice());
-            return productRepository.save(product);
-        }
-        return null;
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+        return productRepository.findById(id).map(
+                product->{
+                    product.setName(productDetails.getName());
+                    product.setPrice(productDetails.getPrice());
+                    product.setStock(productDetails.getStock());
+                    product.setCategory(productDetails.getCategory());
+                    return ResponseEntity.ok(productRepository.save(product));
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable UUID id) {
-        productRepository.deleteById(id);
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        if(productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

@@ -1,6 +1,4 @@
 package com.example.storeapp.config;
-
-
 import com.example.storeapp.models.User;
 import com.example.storeapp.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -22,23 +21,30 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepo) {
-        return username -> {
-            User user = userRepo.findByUsername(username);
-            if (user != null) {
-                return user;
-            }
-            throw new UsernameNotFoundException("User '" + username + "' not found");
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return (String username) -> {
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException(
+                            "User '" + username + "' not found"));
         };
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth->auth.
-                requestMatchers("/api/orders/**","/api/products/**").hasRole("USERS")
+                requestMatchers("/api/orders/**","/api/products/**").hasRole("USER")
                         .requestMatchers("/", "/login", "/register", "/**").permitAll()
+                .anyRequest().authenticated()
     ).formLogin(login->login.
-                loginPage("/login").defaultSuccessUrl("/").permitAll()).
-                oauth2Login(oauth2->oauth2.loginPage("/login").permitAll())
-        .logout(logout->logout.logoutSuccessUrl("/").permitAll()).build();
+                loginPage("/login").
+                        defaultSuccessUrl("/",true).
+                        permitAll()).
+                oauth2Login(oauth2->
+                        oauth2.
+                                loginPage("/login").
+                                permitAll())
+        .logout(logout->
+                logout.logoutSuccessUrl("/").
+                        permitAll()).
+                build();
     }
 }
