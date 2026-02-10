@@ -1,12 +1,14 @@
 package com.example.storeapp.controllers;
 import com.example.storeapp.models.Product;
 import com.example.storeapp.repositories.ProductRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin(origins = "localhost/8081")
 public class ProductController {
 
     private final ProductRepository productRepository;
@@ -26,6 +28,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Product createProduct(@RequestBody Product product) {
 
         return productRepository.save(product);
@@ -44,6 +47,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         if(productRepository.existsById(id)) {
             productRepository.deleteById(id);

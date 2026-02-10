@@ -45,10 +45,30 @@ public class UserController {
             user->{
                 user.setEmail(userDetails.getEmail());
                 user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-                user.setEmail(userDetails.getEmail());
+                user.setUsername(userDetails.getUsername());
                 return ResponseEntity.ok(userRepository.save(user));
             }).orElse(ResponseEntity.notFound().build());
     }
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> patchUser(@PathVariable Long id, @RequestBody User userDetails) {
+        return userRepository.findById(id).map(
+           user-> {
+               if (userDetails.getUsername() != null) {
+                   userDetails.setUsername(userDetails.getUsername());
+               }
+               if (userDetails.getPassword() != null) {
+                   userDetails.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+               }
+               if (userDetails.getEmail() != null) {
+                    userDetails.setEmail(userDetails.getEmail());
+               }
+
+               return ResponseEntity.ok(userRepository.save(user));
+           }).orElse(ResponseEntity.notFound().build());
+
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
     if(userRepository.existsById(id)) {

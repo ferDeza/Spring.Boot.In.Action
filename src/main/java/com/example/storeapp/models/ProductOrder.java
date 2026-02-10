@@ -1,11 +1,6 @@
 package com.example.storeapp.models;
-
-import com.datastax.oss.driver.api.core.uuid.Uuids;
-import com.example.storeapp.models.ProductUDT.ProductUDT;
-import com.example.storeapp.models.UserUDT.UserUDT;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +19,9 @@ public class ProductOrder implements Serializable {
     private String username;
     @Temporal(TemporalType.TIMESTAMP)
     private Date placeAt;
+
     @ManyToOne
+
     @JoinColumn(name="user_id")
     private User user;
     @ManyToMany
